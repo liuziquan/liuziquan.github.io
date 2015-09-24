@@ -400,6 +400,277 @@ BUFFERS BUFFER buff-<span class="keyword">size</span> PARALLELISM <span class="k
   </entry>
   
   <entry>
+    <title><![CDATA[HBase简单Java代码示例]]></title>
+    <link href="http://liuziquan.github.io/2015/09/11/HBase%E7%AE%80%E5%8D%95Java%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B/"/>
+    <id>http://liuziquan.github.io/2015/09/11/HBase简单Java代码示例/</id>
+    <published>2015-09-10T16:00:00.000Z</published>
+    <updated>2015-09-11T07:26:17.988Z</updated>
+    <content type="html"><![CDATA[<p>这里我们用一个学生成绩表作为例子,对HBase的基本操作和基本概念进行讲解:<br>下面是学生的成绩表:</p>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>grade</th>
+<th>course:math</th>
+<th>course:art</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tom</td>
+<td>1</td>
+<td>87</td>
+<td>97</td>
+</tr>
+<tr>
+<td>Jerry</td>
+<td>2</td>
+<td>100</td>
+<td>80</td>
+</tr>
+</tbody>
+</table>
+<p>这里grade对于表来说是一个列,course对于表来说是一个列族,这个列族由两个列组成:math和art,<br>当然我们可以根据我们的需要在course中建立更多的列族,如computer,physics等相应的列添加入course列族.<br>有了上面的想法和需求,我们就可以在HBase中建立相应的数据表啦!</p>
+<ol>
+<li><p>建立一个表格 scores 具有两个列族grade 和courese</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">002</span>:<span class="number">0</span>&gt; create <span class="string">'scores'</span>, <span class="string">'grade'</span>, <span class="string">'course'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">4.1610</span> seconds
+</code></pre></li>
+<li><p>查看当先HBase中具有哪些表</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">003</span>:<span class="number">0</span>&gt; list
+scores
+<span class="number">1</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0210</span> seconds
+</code></pre></li>
+<li><p>查看表的构造</p>
+<pre><code>hbase(main):<span class="number">004</span>:<span class="number">0</span>&gt; describe <span class="string">'scores'</span>
+{NAME =&gt; <span class="string">'scores'</span>, IS_ROOT =&gt; <span class="string">'false'</span>, IS_META =&gt; <span class="string">'false'</span>, FAMILIES =&gt; [{NAME =&gt; <span class="string">'course'</span>, BLOOMFILTER =&gt; <span class="string">'false'</span>, IN_MEMORY =&gt; <span class="string">'false'</span>, LENGTH =&gt; <span class="string">'2147483647'</span>, BLOCKCACHE =&gt; <span class="string">'false'</span>, VERSIONS =&gt; <span class="string">'3'</span>, TTL =&gt; <span class="string">'-1'</span>, COMPRESSION =&gt; <span class="string">'NONE'</span>}, {NAME =&gt; <span class="string">'grade'</span>, BLOOMFILTER =&gt; <span class="string">'false'</span>, IN_MEMORY =&gt; <span class="string">'false'</span>, LENGTH =&gt; <span class="string">'2147483647'</span>, BLOCKCACHE =&gt; <span class="string">'false'</span>, VERSIONS =&gt; <span class="string">'3'</span>, TTL =&gt; <span class="string">'-1'</span>, COMPRESSION =&gt; <span class="string">'NONE'</span>}]}
+<span class="number">1</span> row(s) <span class="keyword">in</span> <span class="number">0.0130</span> seconds
+</code></pre></li>
+<li><p>加入一行数据,行名称为 Tom 列族grad的列名为”” 值位1</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">005</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Tom'</span>, <span class="string">'grade:'</span>, <span class="string">'1'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0070</span> seconds
+</code></pre></li>
+<li><p>给Tom这一行的数据的列族添加一列</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">006</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Tom'</span>, <span class="string">'course:math'</span>, <span class="string">'87'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0040</span> seconds
+</code></pre></li>
+<li><p>给Tom这一行的数据的列族添加一列</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">007</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Tom'</span>, <span class="string">'course:art'</span>, <span class="string">'97'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0030</span> seconds
+</code></pre></li>
+<li><p>加入一行数据,行名称为 Jerry 列族grad的列名为”” 值位2</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">008</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Jerry'</span>, <span class="string">'grade:'</span>, <span class="string">'2'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0040</span> seconds
+</code></pre></li>
+<li><p>给Jerry这一行的数据的列族添加一列</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">009</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Jerry'</span>, <span class="string">'course:math'</span>, <span class="string">'100'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0030</span> seconds
+</code></pre></li>
+<li><p>给Jerry这一行的数据的列族添加一列</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">010</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Jerry'</span>, <span class="string">'course:art'</span>, <span class="string">'80'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0050</span> seconds
+</code></pre></li>
+<li><p>查看scores表中Tom的相关数据</p>
+<pre><code>hbase(main):011:<span class="operator">0&gt; <span class="keyword">get</span> <span class="string">'scores'</span>, <span class="string">'Tom'</span>
+<span class="keyword">COLUMN</span>                       CELL
+course:art                  <span class="keyword">timestamp</span>=<span class="number">1224726394286</span>, <span class="keyword">value</span>=<span class="number">97</span>
+course:math                 <span class="keyword">timestamp</span>=<span class="number">1224726377027</span>, <span class="keyword">value</span>=<span class="number">87</span>
+grade:                      <span class="keyword">timestamp</span>=<span class="number">1224726360727</span>, <span class="keyword">value</span>=<span class="number">1</span>
+<span class="number">3</span> <span class="keyword">row</span>(s) <span class="keyword">in</span> <span class="number">0.0070</span> seconds</span>
+</code></pre></li>
+<li><p>查看scores表中所有数据</p>
+<pre><code>hbase(main):012:0&gt; scan 'scores'
+ROW                          COLUMN+CELL
+Tom                         column=course:art, timestamp=1224726394286, value=97
+Tom                         column=course:math, timestamp=1224726377027, value=87
+Tom                         column=grade:, timestamp=1224726360727, value=1
+Jerry                        column=course:art, timestamp=1224726424967, value=80
+Jerry                        column=course:math, timestamp=1224726416145, value=100
+Jerry                        column=grade:, timestamp=1224726404965, value=2
+6 row(s) in 0.0410 seconds
+</code></pre></li>
+<li><p>查看scores表中所有数据courses列族的所有数据</p>
+<pre><code>hbase(main):013:<span class="operator">0&gt; <span class="keyword">scan</span> <span class="string">'scores'</span>,{<span class="keyword">COLUMN</span>=&gt;[<span class="string">'course'</span>]}        
+<span class="keyword">ROW</span>                                      <span class="keyword">COLUMN</span>+CELL                                                                                                        
+ Jerry                                   <span class="keyword">column</span>=course:art, <span class="keyword">timestamp</span>=<span class="number">1441953970540</span>, <span class="keyword">value</span>=<span class="number">80</span>                                                               
+ Jerry                                   <span class="keyword">column</span>=course:math, <span class="keyword">timestamp</span>=<span class="number">1441953959676</span>, <span class="keyword">value</span>=<span class="number">100</span>                                                             
+ Tom                                     <span class="keyword">column</span>=course:art, <span class="keyword">timestamp</span>=<span class="number">1441953935469</span>, <span class="keyword">value</span>=<span class="number">97</span>                                                               
+ Tom                                     <span class="keyword">column</span>=course:math, <span class="keyword">timestamp</span>=<span class="number">1441953923125</span>, <span class="keyword">value</span>=<span class="number">87</span>                                                              
+<span class="number">2</span> <span class="keyword">row</span>(s) <span class="keyword">in</span> <span class="number">0.0640</span> seconds</span>
+</code></pre></li>
+</ol>
+<p>上面就是HBase的基本shell操作的一个例子,可以看出,hbase的shell还是比较简单易用的,<br>从中也可以看出HBase shell缺少很多传统sql中的一些类似于like等相关操作,<br>当然,HBase作为BigTable的一个开源实现,而BigTable是作为 google业务的支持模型,<br>很多sql语句中的一些东西可能还真的不需要.<br>当然,通过程序我们也可以对HBase进行相关的操作.下面的程序就完成了上面shell操作的内容:</p>
+<pre><code><span class="built_in">import</span> java.io.IOException;
+<span class="built_in">import</span> java.io.ByteArrayOutputStream;
+<span class="built_in">import</span> java.io.DataOutputStream;
+<span class="built_in">import</span> java.io.ByteArrayInputStream;
+<span class="built_in">import</span> java.io.DataInputStream;
+<span class="built_in">import</span> java.util.Map;
+<span class="built_in">import</span> org.apache.hadoop.io.Writable;
+<span class="built_in">import</span> org.apache.hadoop.io.IntWritable;
+<span class="built_in">import</span> org.apache.hadoop.hbase.HBaseConfiguration;
+<span class="built_in">import</span> org.apache.hadoop.hbase.HTableDescriptor;
+<span class="built_in">import</span> org.apache.hadoop.hbase.HColumnDescriptor;
+<span class="built_in">import</span> org.apache.hadoop.hbase.client.HBaseAdmin;
+<span class="built_in">import</span> org.apache.hadoop.hbase.client.HTable;
+<span class="built_in">import</span> org.apache.hadoop.hbase.io.BatchUpdate;
+<span class="built_in">import</span> org.apache.hadoop.hbase.io.RowResult;
+<span class="built_in">import</span> org.apache.hadoop.hbase.io.Cell;
+<span class="built_in">import</span> org.apache.hadoop.hbase.util.Writables;
+public class HBaseBasic {
+    public static void main<span class="params">(String[] args)</span> throws Exception {
+        HBaseConfiguration config = new HBaseConfiguration<span class="params">()</span>;
+        HBaseAdmin admin = new HBaseAdmin<span class="params">(config)</span>;
+        <span class="keyword">if</span> <span class="params">(admin.tableExists<span class="params">(<span class="string">"scores"</span>)</span>)</span> {
+            System.out.println<span class="params">(<span class="string">"drop table"</span>)</span>;
+            admin.disableTable<span class="params">(<span class="string">"scores"</span>)</span>;
+            admin.deleteTable<span class="params">(<span class="string">"scores"</span>)</span>;
+        }
+
+        System.out.println<span class="params">(<span class="string">"create table"</span>)</span>;
+        HTableDescriptor tableDescripter = new HTableDescriptor<span class="params">(<span class="string">"scores"</span>.getBytes<span class="params">()</span>)</span>;
+        tableDescripter.addFamily<span class="params">(new HColumnDescriptor<span class="params">(<span class="string">"grade:"</span>)</span>)</span>;
+        tableDescripter.addFamily<span class="params">(new HColumnDescriptor<span class="params">(<span class="string">"course:"</span>)</span>)</span>;
+        admin.createTable<span class="params">(tableDescripter)</span>;
+        HTable table = new HTable<span class="params">(config, <span class="string">"scores"</span>)</span>;
+
+        System.out.println<span class="params">(<span class="string">"add Tom's data"</span>)</span>;
+        BatchUpdate tomUpdate = new BatchUpdate<span class="params">(<span class="string">"Tom"</span>)</span>;
+        tomUpdate.put<span class="params">(<span class="string">"grade:"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">1</span>)</span>)</span>)</span>;
+        tomUpdate.put<span class="params">(<span class="string">"course:math"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">87</span>)</span>)</span>)</span>;
+        tomUpdate.put<span class="params">(<span class="string">"course:art"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">97</span>)</span>)</span>)</span>;
+        table.commit<span class="params">(tomUpdate)</span>;
+
+        System.out.println<span class="params">(<span class="string">"add Jerry's data"</span>)</span>;
+        BatchUpdate jerryUpdate = new BatchUpdate<span class="params">(<span class="string">"Jerry"</span>)</span>;
+        jerryUpdate.put<span class="params">(<span class="string">"grade:"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">2</span>)</span>)</span>)</span>;
+        jerryUpdate.put<span class="params">(<span class="string">"course:math"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">100</span>)</span>)</span>)</span>;
+        jerryUpdate.put<span class="params">(<span class="string">"course:art"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">80</span>)</span>)</span>)</span>;
+        table.commit<span class="params">(jerryUpdate)</span>;
+        <span class="keyword">for</span> <span class="params">(RowResult row : table.getScanner<span class="params">(new String[] { <span class="string">"course:"</span> })</span>)</span> {
+            System.out.format<span class="params">(<span class="string">"ROW\t%s\n"</span>, new String<span class="params">(row.getRow<span class="params">()</span>)</span>)</span>;
+            <span class="keyword">for</span> <span class="params">(Map.Entry&lt;byte[], Cell&gt; entry : row.entrySet<span class="params">()</span>)</span> {
+                String column = new String<span class="params">(entry.getKey<span class="params">()</span>)</span>;
+                Cell cell = entry.getValue<span class="params">()</span>;
+                IntWritable value = new IntWritable<span class="params">()</span>;
+                Writables.copyWritable<span class="params">(cell.getValue<span class="params">()</span>, value)</span>;
+                System.out.format<span class="params">(<span class="string">" COLUMN\t%s\t%d\n"</span>, column, value.get<span class="params">()</span>)</span>;
+            }
+        }
+    }
+}
+</code></pre><p>输出如下:</p>
+<pre><code><span class="operator"><span class="keyword">drop</span> <span class="keyword">table</span>
+<span class="number">09</span>/<span class="number">07</span>/<span class="number">11</span> <span class="number">08</span>:<span class="number">51</span>:<span class="number">59</span> INFO <span class="keyword">client</span>.HBaseAdmin: Disabled scores
+<span class="number">09</span>/<span class="number">07</span>/<span class="number">11</span> <span class="number">08</span>:<span class="number">51</span>:<span class="number">59</span> INFO <span class="keyword">client</span>.HBaseAdmin: Deleted scores
+<span class="keyword">create</span> <span class="keyword">table</span>
+<span class="keyword">add</span> Tom<span class="string">'s data
+add Jerry'</span>s <span class="keyword">data</span>
+<span class="keyword">ROW</span>     Tom
+  <span class="keyword">COLUMN</span>        course:art      <span class="number">97</span>
+  <span class="keyword">COLUMN</span>        course:math     <span class="number">87</span>
+<span class="keyword">ROW</span>     Jerry
+  <span class="keyword">COLUMN</span>        course:art      <span class="number">80</span>
+  <span class="keyword">COLUMN</span>        course:math     <span class="number">100</span></span>
+</code></pre>]]></content>
+    <summary type="html">
+    <![CDATA[<p>这里我们用一个学生成绩表作为例子,对HBase的基本操作和基本概念进行讲解:<br>下面是学生的成绩表:</p>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>grade</th>
+<th>course:math</th>
+<th>cours]]>
+    </summary>
+    
+      <category term="HBase" scheme="http://liuziquan.github.io/tags/HBase/"/>
+    
+      <category term="HBase" scheme="http://liuziquan.github.io/categories/HBase/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[HBase应用之Table设计]]></title>
+    <link href="http://liuziquan.github.io/2015/09/11/HBase%E5%BA%94%E7%94%A8%E4%B9%8BTable%E8%AE%BE%E8%AE%A1/"/>
+    <id>http://liuziquan.github.io/2015/09/11/HBase应用之Table设计/</id>
+    <published>2015-09-10T16:00:00.000Z</published>
+    <updated>2015-09-11T08:26:10.892Z</updated>
+    <content type="html"><![CDATA[<h3 id="HBase基本类型定义">HBase基本类型定义</h3><ul>
+<li>Table：表 </li>
+<li>RowKey：行健，主键</li>
+<li>Column Family：列族，包含一个或者多个相关列</li>
+<li>Column：属于某一个columnfamily，familyName:columnName，每条记录可动态添加</li>
+<li>timestamp：每次操作对应的时间戳，支持用户自定义，默认为当前时间的毫秒值</li>
+<li>value：值，和timestamp一起支持多version的概念</li>
+</ul>
+<p>通过HBase Shell可以拿到一条数据，如下：</p>
+<pre><code>hbase(main):029:<span class="operator">0&gt; <span class="keyword">scan</span> <span class="string">'scores'</span>,{<span class="keyword">LIMIT</span>=&gt;<span class="number">1</span>}
+<span class="keyword">ROW</span>                                      <span class="keyword">COLUMN</span>+CELL                                                                                                        
+ Jerry                                   <span class="keyword">column</span>=course:art, <span class="keyword">timestamp</span>=<span class="number">1441953970540</span>, <span class="keyword">value</span>=<span class="number">80</span>                                                               
+ Jerry                                   <span class="keyword">column</span>=course:math, <span class="keyword">timestamp</span>=<span class="number">1441953959676</span>, <span class="keyword">value</span>=<span class="number">100</span>                                                             
+ Jerry                                   <span class="keyword">column</span>=grade:, <span class="keyword">timestamp</span>=<span class="number">1441953949725</span>, <span class="keyword">value</span>=<span class="number">2</span>                                                                    
+<span class="number">1</span> <span class="keyword">row</span>(s) <span class="keyword">in</span> <span class="number">0.0350</span> seconds</span>
+</code></pre><p>对应内容：</p>
+<pre><code><span class="setting">Jerry =<span class="value">》 RowKey</span></span>
+<span class="setting">course =<span class="value">》 Column Family</span></span>
+<span class="setting">column =<span class="value">》 art</span></span>
+<span class="setting">timestamp =<span class="value">&gt; <span class="number">1441953970540</span></span></span>
+<span class="setting">80  =<span class="value">&gt; value</span></span>
+</code></pre><h3 id="HBase存储结构">HBase存储结构</h3><ol>
+<li>HBase以表（HTable）的形式存储数据</li>
+<li>HTable包括很多行，每行通过RowKey唯一标记，行按照RowKey的字典序排列，表在行的方向上分割为多个HRegion</li>
+<li>每行包括一个RowKey和多个Column Family，数据按照Column Family进行物理切割，即不同Column Family的数据放在不同的Store中，一个Column Family放在一个Strore中</li>
+<li>HRegion由多个Store组成。一个Store由物理上存在的一个MemStrore（内存中）和多个StoreFile（HFile）中</li>
+</ol>
+<h3 id="设计">设计</h3><p>从应用角度，有两点比较重要：</p>
+<ol>
+<li>HBase中RowKey是按照字典序排列的</li>
+<li>不同Column Family的数据，在物理上是分开的</li>
+</ol>
+<p>在做table设计的时候，主要围绕上述两点做文章。<br>RowKey的设计需要根据请求数据特点：</p>
+<ol>
+<li>单个查询，需要尽量缩小Key的长度</li>
+<li>范围查询，根据RowKey按字典序排列的特点，针对查询需求设计rowkey，保证范围查询的rowkey在物理上存放在一起</li>
+</ol>
+<p><strong>Column Family的设计需遵循：尽量避免一次请求需要拿到的Column分布在不同的Column Family中</strong></p>
+<h3 id="实例">实例</h3><p>对于基于RowKey的范围查询设计，我们来看一个实例：</p>
+<ol>
+<li>给出userid，返回这个userid最近插入的N条数据 </li>
+<li>给出userid，及一个时间区间，返回这个时间区间的N条数据</li>
+</ol>
+<p>针对需求，Key设计如下：</p>
+<pre><code>Userid_DataTime_InertTime
+Userid：即userid
+DataTime：数据所属时间(ms)，定义为：Long<span class="class">.MAX_VALUE</span> - dataTime.<span class="function"><span class="title">getTime</span><span class="params">()</span></span>，由于RowKey字典序排列，可以使最近插入的数据排在前面，支持“最近插入的N条数据”的需求
+InsertTime：数据入库时间(ns)，取nanotime（InsertTime的存在是由于在这个应用中，Userid+DataTime不能唯一定位一条数据）
+</code></pre><p>Key生成代码如下：</p>
+<pre><code><span class="comment">//生成RowKey  </span>
+<span class="keyword">private</span> <span class="keyword">String</span> buildPutRowKey(<span class="built_in">int</span> userId, Date addTime) {  
+        <span class="keyword">String</span> <span class="variable">key</span> = userId + <span class="string">"_"</span> + getRowKeyTimestamp(addTime) + <span class="string">"_"</span> + System.nanoTime();  
+        <span class="keyword">return</span> <span class="variable">key</span>;  
+}  
+
+<span class="comment">//构建DataTime  </span>
+<span class="keyword">private</span> <span class="keyword">long</span> getRowKeyTimestamp(Date addTime) {  
+        <span class="keyword">return</span> Long.MAX_VALUE - addTime.getTime();  
+}  
+</code></pre>]]></content>
+    <summary type="html">
+    <![CDATA[<h3 id="HBase基本类型定义">HBase基本类型定义</h3><ul>
+<li>Table：表 </li>
+<li>RowKey：行健，主键</li>
+<li>Column Family：列族，包含一个或者多个相关列</li>
+<li>Column：属于某一个colu]]>
+    </summary>
+    
+      <category term="HBase" scheme="http://liuziquan.github.io/tags/HBase/"/>
+    
+      <category term="HBase" scheme="http://liuziquan.github.io/categories/HBase/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[HBase入门实例]]></title>
     <link href="http://liuziquan.github.io/2015/09/11/HBase%E5%85%A5%E9%97%A8%E5%AE%9E%E4%BE%8B/"/>
     <id>http://liuziquan.github.io/2015/09/11/HBase入门实例/</id>
@@ -944,277 +1215,6 @@ public class HbaseCRUDTest_New {
 </code></pre>]]></content>
     <summary type="html">
     <![CDATA[<h2 id="Table中Family和Qualifier的关系与区别">Table中Family和Qualifier的关系与区别</h2><p>就像用MySQL一样，我们要做的是表设计，MySQL中的表，行，列的在HBase已经有所区别了，在HBase中主要是Table和Fa]]>
-    </summary>
-    
-      <category term="HBase" scheme="http://liuziquan.github.io/tags/HBase/"/>
-    
-      <category term="HBase" scheme="http://liuziquan.github.io/categories/HBase/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[HBase简单Java代码示例]]></title>
-    <link href="http://liuziquan.github.io/2015/09/11/HBase%E7%AE%80%E5%8D%95Java%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B/"/>
-    <id>http://liuziquan.github.io/2015/09/11/HBase简单Java代码示例/</id>
-    <published>2015-09-10T16:00:00.000Z</published>
-    <updated>2015-09-11T07:26:17.988Z</updated>
-    <content type="html"><![CDATA[<p>这里我们用一个学生成绩表作为例子,对HBase的基本操作和基本概念进行讲解:<br>下面是学生的成绩表:</p>
-<table>
-<thead>
-<tr>
-<th>name</th>
-<th>grade</th>
-<th>course:math</th>
-<th>course:art</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Tom</td>
-<td>1</td>
-<td>87</td>
-<td>97</td>
-</tr>
-<tr>
-<td>Jerry</td>
-<td>2</td>
-<td>100</td>
-<td>80</td>
-</tr>
-</tbody>
-</table>
-<p>这里grade对于表来说是一个列,course对于表来说是一个列族,这个列族由两个列组成:math和art,<br>当然我们可以根据我们的需要在course中建立更多的列族,如computer,physics等相应的列添加入course列族.<br>有了上面的想法和需求,我们就可以在HBase中建立相应的数据表啦!</p>
-<ol>
-<li><p>建立一个表格 scores 具有两个列族grade 和courese</p>
-<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">002</span>:<span class="number">0</span>&gt; create <span class="string">'scores'</span>, <span class="string">'grade'</span>, <span class="string">'course'</span>
-<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">4.1610</span> seconds
-</code></pre></li>
-<li><p>查看当先HBase中具有哪些表</p>
-<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">003</span>:<span class="number">0</span>&gt; list
-scores
-<span class="number">1</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0210</span> seconds
-</code></pre></li>
-<li><p>查看表的构造</p>
-<pre><code>hbase(main):<span class="number">004</span>:<span class="number">0</span>&gt; describe <span class="string">'scores'</span>
-{NAME =&gt; <span class="string">'scores'</span>, IS_ROOT =&gt; <span class="string">'false'</span>, IS_META =&gt; <span class="string">'false'</span>, FAMILIES =&gt; [{NAME =&gt; <span class="string">'course'</span>, BLOOMFILTER =&gt; <span class="string">'false'</span>, IN_MEMORY =&gt; <span class="string">'false'</span>, LENGTH =&gt; <span class="string">'2147483647'</span>, BLOCKCACHE =&gt; <span class="string">'false'</span>, VERSIONS =&gt; <span class="string">'3'</span>, TTL =&gt; <span class="string">'-1'</span>, COMPRESSION =&gt; <span class="string">'NONE'</span>}, {NAME =&gt; <span class="string">'grade'</span>, BLOOMFILTER =&gt; <span class="string">'false'</span>, IN_MEMORY =&gt; <span class="string">'false'</span>, LENGTH =&gt; <span class="string">'2147483647'</span>, BLOCKCACHE =&gt; <span class="string">'false'</span>, VERSIONS =&gt; <span class="string">'3'</span>, TTL =&gt; <span class="string">'-1'</span>, COMPRESSION =&gt; <span class="string">'NONE'</span>}]}
-<span class="number">1</span> row(s) <span class="keyword">in</span> <span class="number">0.0130</span> seconds
-</code></pre></li>
-<li><p>加入一行数据,行名称为 Tom 列族grad的列名为”” 值位1</p>
-<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">005</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Tom'</span>, <span class="string">'grade:'</span>, <span class="string">'1'</span>
-<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0070</span> seconds
-</code></pre></li>
-<li><p>给Tom这一行的数据的列族添加一列</p>
-<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">006</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Tom'</span>, <span class="string">'course:math'</span>, <span class="string">'87'</span>
-<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0040</span> seconds
-</code></pre></li>
-<li><p>给Tom这一行的数据的列族添加一列</p>
-<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">007</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Tom'</span>, <span class="string">'course:art'</span>, <span class="string">'97'</span>
-<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0030</span> seconds
-</code></pre></li>
-<li><p>加入一行数据,行名称为 Jerry 列族grad的列名为”” 值位2</p>
-<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">008</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Jerry'</span>, <span class="string">'grade:'</span>, <span class="string">'2'</span>
-<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0040</span> seconds
-</code></pre></li>
-<li><p>给Jerry这一行的数据的列族添加一列</p>
-<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">009</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Jerry'</span>, <span class="string">'course:math'</span>, <span class="string">'100'</span>
-<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0030</span> seconds
-</code></pre></li>
-<li><p>给Jerry这一行的数据的列族添加一列</p>
-<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">010</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Jerry'</span>, <span class="string">'course:art'</span>, <span class="string">'80'</span>
-<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0050</span> seconds
-</code></pre></li>
-<li><p>查看scores表中Tom的相关数据</p>
-<pre><code>hbase(main):011:<span class="operator">0&gt; <span class="keyword">get</span> <span class="string">'scores'</span>, <span class="string">'Tom'</span>
-<span class="keyword">COLUMN</span>                       CELL
-course:art                  <span class="keyword">timestamp</span>=<span class="number">1224726394286</span>, <span class="keyword">value</span>=<span class="number">97</span>
-course:math                 <span class="keyword">timestamp</span>=<span class="number">1224726377027</span>, <span class="keyword">value</span>=<span class="number">87</span>
-grade:                      <span class="keyword">timestamp</span>=<span class="number">1224726360727</span>, <span class="keyword">value</span>=<span class="number">1</span>
-<span class="number">3</span> <span class="keyword">row</span>(s) <span class="keyword">in</span> <span class="number">0.0070</span> seconds</span>
-</code></pre></li>
-<li><p>查看scores表中所有数据</p>
-<pre><code>hbase(main):012:0&gt; scan 'scores'
-ROW                          COLUMN+CELL
-Tom                         column=course:art, timestamp=1224726394286, value=97
-Tom                         column=course:math, timestamp=1224726377027, value=87
-Tom                         column=grade:, timestamp=1224726360727, value=1
-Jerry                        column=course:art, timestamp=1224726424967, value=80
-Jerry                        column=course:math, timestamp=1224726416145, value=100
-Jerry                        column=grade:, timestamp=1224726404965, value=2
-6 row(s) in 0.0410 seconds
-</code></pre></li>
-<li><p>查看scores表中所有数据courses列族的所有数据</p>
-<pre><code>hbase(main):013:<span class="operator">0&gt; <span class="keyword">scan</span> <span class="string">'scores'</span>,{<span class="keyword">COLUMN</span>=&gt;[<span class="string">'course'</span>]}        
-<span class="keyword">ROW</span>                                      <span class="keyword">COLUMN</span>+CELL                                                                                                        
- Jerry                                   <span class="keyword">column</span>=course:art, <span class="keyword">timestamp</span>=<span class="number">1441953970540</span>, <span class="keyword">value</span>=<span class="number">80</span>                                                               
- Jerry                                   <span class="keyword">column</span>=course:math, <span class="keyword">timestamp</span>=<span class="number">1441953959676</span>, <span class="keyword">value</span>=<span class="number">100</span>                                                             
- Tom                                     <span class="keyword">column</span>=course:art, <span class="keyword">timestamp</span>=<span class="number">1441953935469</span>, <span class="keyword">value</span>=<span class="number">97</span>                                                               
- Tom                                     <span class="keyword">column</span>=course:math, <span class="keyword">timestamp</span>=<span class="number">1441953923125</span>, <span class="keyword">value</span>=<span class="number">87</span>                                                              
-<span class="number">2</span> <span class="keyword">row</span>(s) <span class="keyword">in</span> <span class="number">0.0640</span> seconds</span>
-</code></pre></li>
-</ol>
-<p>上面就是HBase的基本shell操作的一个例子,可以看出,hbase的shell还是比较简单易用的,<br>从中也可以看出HBase shell缺少很多传统sql中的一些类似于like等相关操作,<br>当然,HBase作为BigTable的一个开源实现,而BigTable是作为 google业务的支持模型,<br>很多sql语句中的一些东西可能还真的不需要.<br>当然,通过程序我们也可以对HBase进行相关的操作.下面的程序就完成了上面shell操作的内容:</p>
-<pre><code><span class="built_in">import</span> java.io.IOException;
-<span class="built_in">import</span> java.io.ByteArrayOutputStream;
-<span class="built_in">import</span> java.io.DataOutputStream;
-<span class="built_in">import</span> java.io.ByteArrayInputStream;
-<span class="built_in">import</span> java.io.DataInputStream;
-<span class="built_in">import</span> java.util.Map;
-<span class="built_in">import</span> org.apache.hadoop.io.Writable;
-<span class="built_in">import</span> org.apache.hadoop.io.IntWritable;
-<span class="built_in">import</span> org.apache.hadoop.hbase.HBaseConfiguration;
-<span class="built_in">import</span> org.apache.hadoop.hbase.HTableDescriptor;
-<span class="built_in">import</span> org.apache.hadoop.hbase.HColumnDescriptor;
-<span class="built_in">import</span> org.apache.hadoop.hbase.client.HBaseAdmin;
-<span class="built_in">import</span> org.apache.hadoop.hbase.client.HTable;
-<span class="built_in">import</span> org.apache.hadoop.hbase.io.BatchUpdate;
-<span class="built_in">import</span> org.apache.hadoop.hbase.io.RowResult;
-<span class="built_in">import</span> org.apache.hadoop.hbase.io.Cell;
-<span class="built_in">import</span> org.apache.hadoop.hbase.util.Writables;
-public class HBaseBasic {
-    public static void main<span class="params">(String[] args)</span> throws Exception {
-        HBaseConfiguration config = new HBaseConfiguration<span class="params">()</span>;
-        HBaseAdmin admin = new HBaseAdmin<span class="params">(config)</span>;
-        <span class="keyword">if</span> <span class="params">(admin.tableExists<span class="params">(<span class="string">"scores"</span>)</span>)</span> {
-            System.out.println<span class="params">(<span class="string">"drop table"</span>)</span>;
-            admin.disableTable<span class="params">(<span class="string">"scores"</span>)</span>;
-            admin.deleteTable<span class="params">(<span class="string">"scores"</span>)</span>;
-        }
-
-        System.out.println<span class="params">(<span class="string">"create table"</span>)</span>;
-        HTableDescriptor tableDescripter = new HTableDescriptor<span class="params">(<span class="string">"scores"</span>.getBytes<span class="params">()</span>)</span>;
-        tableDescripter.addFamily<span class="params">(new HColumnDescriptor<span class="params">(<span class="string">"grade:"</span>)</span>)</span>;
-        tableDescripter.addFamily<span class="params">(new HColumnDescriptor<span class="params">(<span class="string">"course:"</span>)</span>)</span>;
-        admin.createTable<span class="params">(tableDescripter)</span>;
-        HTable table = new HTable<span class="params">(config, <span class="string">"scores"</span>)</span>;
-
-        System.out.println<span class="params">(<span class="string">"add Tom's data"</span>)</span>;
-        BatchUpdate tomUpdate = new BatchUpdate<span class="params">(<span class="string">"Tom"</span>)</span>;
-        tomUpdate.put<span class="params">(<span class="string">"grade:"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">1</span>)</span>)</span>)</span>;
-        tomUpdate.put<span class="params">(<span class="string">"course:math"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">87</span>)</span>)</span>)</span>;
-        tomUpdate.put<span class="params">(<span class="string">"course:art"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">97</span>)</span>)</span>)</span>;
-        table.commit<span class="params">(tomUpdate)</span>;
-
-        System.out.println<span class="params">(<span class="string">"add Jerry's data"</span>)</span>;
-        BatchUpdate jerryUpdate = new BatchUpdate<span class="params">(<span class="string">"Jerry"</span>)</span>;
-        jerryUpdate.put<span class="params">(<span class="string">"grade:"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">2</span>)</span>)</span>)</span>;
-        jerryUpdate.put<span class="params">(<span class="string">"course:math"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">100</span>)</span>)</span>)</span>;
-        jerryUpdate.put<span class="params">(<span class="string">"course:art"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">80</span>)</span>)</span>)</span>;
-        table.commit<span class="params">(jerryUpdate)</span>;
-        <span class="keyword">for</span> <span class="params">(RowResult row : table.getScanner<span class="params">(new String[] { <span class="string">"course:"</span> })</span>)</span> {
-            System.out.format<span class="params">(<span class="string">"ROW\t%s\n"</span>, new String<span class="params">(row.getRow<span class="params">()</span>)</span>)</span>;
-            <span class="keyword">for</span> <span class="params">(Map.Entry&lt;byte[], Cell&gt; entry : row.entrySet<span class="params">()</span>)</span> {
-                String column = new String<span class="params">(entry.getKey<span class="params">()</span>)</span>;
-                Cell cell = entry.getValue<span class="params">()</span>;
-                IntWritable value = new IntWritable<span class="params">()</span>;
-                Writables.copyWritable<span class="params">(cell.getValue<span class="params">()</span>, value)</span>;
-                System.out.format<span class="params">(<span class="string">" COLUMN\t%s\t%d\n"</span>, column, value.get<span class="params">()</span>)</span>;
-            }
-        }
-    }
-}
-</code></pre><p>输出如下:</p>
-<pre><code><span class="operator"><span class="keyword">drop</span> <span class="keyword">table</span>
-<span class="number">09</span>/<span class="number">07</span>/<span class="number">11</span> <span class="number">08</span>:<span class="number">51</span>:<span class="number">59</span> INFO <span class="keyword">client</span>.HBaseAdmin: Disabled scores
-<span class="number">09</span>/<span class="number">07</span>/<span class="number">11</span> <span class="number">08</span>:<span class="number">51</span>:<span class="number">59</span> INFO <span class="keyword">client</span>.HBaseAdmin: Deleted scores
-<span class="keyword">create</span> <span class="keyword">table</span>
-<span class="keyword">add</span> Tom<span class="string">'s data
-add Jerry'</span>s <span class="keyword">data</span>
-<span class="keyword">ROW</span>     Tom
-  <span class="keyword">COLUMN</span>        course:art      <span class="number">97</span>
-  <span class="keyword">COLUMN</span>        course:math     <span class="number">87</span>
-<span class="keyword">ROW</span>     Jerry
-  <span class="keyword">COLUMN</span>        course:art      <span class="number">80</span>
-  <span class="keyword">COLUMN</span>        course:math     <span class="number">100</span></span>
-</code></pre>]]></content>
-    <summary type="html">
-    <![CDATA[<p>这里我们用一个学生成绩表作为例子,对HBase的基本操作和基本概念进行讲解:<br>下面是学生的成绩表:</p>
-<table>
-<thead>
-<tr>
-<th>name</th>
-<th>grade</th>
-<th>course:math</th>
-<th>cours]]>
-    </summary>
-    
-      <category term="HBase" scheme="http://liuziquan.github.io/tags/HBase/"/>
-    
-      <category term="HBase" scheme="http://liuziquan.github.io/categories/HBase/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[HBase应用之Table设计]]></title>
-    <link href="http://liuziquan.github.io/2015/09/11/HBase%E5%BA%94%E7%94%A8%E4%B9%8BTable%E8%AE%BE%E8%AE%A1/"/>
-    <id>http://liuziquan.github.io/2015/09/11/HBase应用之Table设计/</id>
-    <published>2015-09-10T16:00:00.000Z</published>
-    <updated>2015-09-11T08:26:10.892Z</updated>
-    <content type="html"><![CDATA[<h3 id="HBase基本类型定义">HBase基本类型定义</h3><ul>
-<li>Table：表 </li>
-<li>RowKey：行健，主键</li>
-<li>Column Family：列族，包含一个或者多个相关列</li>
-<li>Column：属于某一个columnfamily，familyName:columnName，每条记录可动态添加</li>
-<li>timestamp：每次操作对应的时间戳，支持用户自定义，默认为当前时间的毫秒值</li>
-<li>value：值，和timestamp一起支持多version的概念</li>
-</ul>
-<p>通过HBase Shell可以拿到一条数据，如下：</p>
-<pre><code>hbase(main):029:<span class="operator">0&gt; <span class="keyword">scan</span> <span class="string">'scores'</span>,{<span class="keyword">LIMIT</span>=&gt;<span class="number">1</span>}
-<span class="keyword">ROW</span>                                      <span class="keyword">COLUMN</span>+CELL                                                                                                        
- Jerry                                   <span class="keyword">column</span>=course:art, <span class="keyword">timestamp</span>=<span class="number">1441953970540</span>, <span class="keyword">value</span>=<span class="number">80</span>                                                               
- Jerry                                   <span class="keyword">column</span>=course:math, <span class="keyword">timestamp</span>=<span class="number">1441953959676</span>, <span class="keyword">value</span>=<span class="number">100</span>                                                             
- Jerry                                   <span class="keyword">column</span>=grade:, <span class="keyword">timestamp</span>=<span class="number">1441953949725</span>, <span class="keyword">value</span>=<span class="number">2</span>                                                                    
-<span class="number">1</span> <span class="keyword">row</span>(s) <span class="keyword">in</span> <span class="number">0.0350</span> seconds</span>
-</code></pre><p>对应内容：</p>
-<pre><code><span class="setting">Jerry =<span class="value">》 RowKey</span></span>
-<span class="setting">course =<span class="value">》 Column Family</span></span>
-<span class="setting">column =<span class="value">》 art</span></span>
-<span class="setting">timestamp =<span class="value">&gt; <span class="number">1441953970540</span></span></span>
-<span class="setting">80  =<span class="value">&gt; value</span></span>
-</code></pre><h3 id="HBase存储结构">HBase存储结构</h3><ol>
-<li>HBase以表（HTable）的形式存储数据</li>
-<li>HTable包括很多行，每行通过RowKey唯一标记，行按照RowKey的字典序排列，表在行的方向上分割为多个HRegion</li>
-<li>每行包括一个RowKey和多个Column Family，数据按照Column Family进行物理切割，即不同Column Family的数据放在不同的Store中，一个Column Family放在一个Strore中</li>
-<li>HRegion由多个Store组成。一个Store由物理上存在的一个MemStrore（内存中）和多个StoreFile（HFile）中</li>
-</ol>
-<h3 id="设计">设计</h3><p>从应用角度，有两点比较重要：</p>
-<ol>
-<li>HBase中RowKey是按照字典序排列的</li>
-<li>不同Column Family的数据，在物理上是分开的</li>
-</ol>
-<p>在做table设计的时候，主要围绕上述两点做文章。<br>RowKey的设计需要根据请求数据特点：</p>
-<ol>
-<li>单个查询，需要尽量缩小Key的长度</li>
-<li>范围查询，根据RowKey按字典序排列的特点，针对查询需求设计rowkey，保证范围查询的rowkey在物理上存放在一起</li>
-</ol>
-<p><strong>Column Family的设计需遵循：尽量避免一次请求需要拿到的Column分布在不同的Column Family中</strong></p>
-<h3 id="实例">实例</h3><p>对于基于RowKey的范围查询设计，我们来看一个实例：</p>
-<ol>
-<li>给出userid，返回这个userid最近插入的N条数据 </li>
-<li>给出userid，及一个时间区间，返回这个时间区间的N条数据</li>
-</ol>
-<p>针对需求，Key设计如下：</p>
-<pre><code>Userid_DataTime_InertTime
-Userid：即userid
-DataTime：数据所属时间(ms)，定义为：Long<span class="class">.MAX_VALUE</span> - dataTime.<span class="function"><span class="title">getTime</span><span class="params">()</span></span>，由于RowKey字典序排列，可以使最近插入的数据排在前面，支持“最近插入的N条数据”的需求
-InsertTime：数据入库时间(ns)，取nanotime（InsertTime的存在是由于在这个应用中，Userid+DataTime不能唯一定位一条数据）
-</code></pre><p>Key生成代码如下：</p>
-<pre><code><span class="comment">//生成RowKey  </span>
-<span class="keyword">private</span> <span class="keyword">String</span> buildPutRowKey(<span class="built_in">int</span> userId, Date addTime) {  
-        <span class="keyword">String</span> <span class="variable">key</span> = userId + <span class="string">"_"</span> + getRowKeyTimestamp(addTime) + <span class="string">"_"</span> + System.nanoTime();  
-        <span class="keyword">return</span> <span class="variable">key</span>;  
-}  
-
-<span class="comment">//构建DataTime  </span>
-<span class="keyword">private</span> <span class="keyword">long</span> getRowKeyTimestamp(Date addTime) {  
-        <span class="keyword">return</span> Long.MAX_VALUE - addTime.getTime();  
-}  
-</code></pre>]]></content>
-    <summary type="html">
-    <![CDATA[<h3 id="HBase基本类型定义">HBase基本类型定义</h3><ul>
-<li>Table：表 </li>
-<li>RowKey：行健，主键</li>
-<li>Column Family：列族，包含一个或者多个相关列</li>
-<li>Column：属于某一个colu]]>
     </summary>
     
       <category term="HBase" scheme="http://liuziquan.github.io/tags/HBase/"/>
