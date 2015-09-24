@@ -1,0 +1,412 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>浅度解析MongoDB的ObjectID生成规则 | Data change world</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Set render engine for 360 browser -->
+  <meta name="renderer" content="webkit">
+  <!-- No Baidu Siteapp-->
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+  <meta name="description" content="ObjectID官方指南ObjectID是类似与“507f1f77bcf86cd799439011”的24位字符串，占用12字节，生成规则如下：
+ObjectId is a 12-byte BSON type, constructed using:
+- 4-byte value representing the seconds since the Unix epoch,
+- 3-byte mach">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅度解析MongoDB的ObjectID生成规则">
+<meta property="og:url" content="http://liuziquan.github.io/2015/09/24/浅度解析MongoDB的ObjectID生成规则/index.html">
+<meta property="og:site_name" content="Data change world">
+<meta property="og:description" content="ObjectID官方指南ObjectID是类似与“507f1f77bcf86cd799439011”的24位字符串，占用12字节，生成规则如下：
+ObjectId is a 12-byte BSON type, constructed using:
+- 4-byte value representing the seconds since the Unix epoch,
+- 3-byte mach">
+<meta property="og:updated_time" content="2015-09-24T07:25:24.708Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅度解析MongoDB的ObjectID生成规则">
+<meta name="twitter:description" content="ObjectID官方指南ObjectID是类似与“507f1f77bcf86cd799439011”的24位字符串，占用12字节，生成规则如下：
+ObjectId is a 12-byte BSON type, constructed using:
+- 4-byte value representing the seconds since the Unix epoch,
+- 3-byte mach">
+  
+  
+    <link rel="icon" href="/img/logo.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- Add to homescreen for Chrome on Android -->    
+    <link rel="icon" sizes="192x192" href="/img/logo.png">
+    <!-- Add to homescreen for Safari on iOS -->
+    <link rel="apple-touch-icon-precomposed" href="/img/logo.png">    
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="/img/logo.png">
+    <meta name="msapplication-TileColor" content="#0e90d2">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Data change world</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Anything can be quantified</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <!--
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="liuziquan.github.io">
+        </form>
+      </div>
+      -->
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-浅度解析MongoDB的ObjectID生成规则" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/09/24/浅度解析MongoDB的ObjectID生成规则/" class="article-date">
+  <time datetime="2015-09-23T16:00:00.000Z" itemprop="datePublished">2015-09-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MongoDB/">MongoDB</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      浅度解析MongoDB的ObjectID生成规则
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+<!-- Table of Contents -->
+
+
+        <h2 id="ObjectID官方指南">ObjectID官方指南</h2><p>ObjectID是类似与“507f1f77bcf86cd799439011”的24位字符串，占用12字节，生成规则如下：</p>
+<pre><code>ObjectId is <span class="operator">a</span> <span class="number">12</span>-<span class="keyword">byte</span> BSON type, constructed <span class="keyword">using</span>:
+- <span class="number">4</span>-<span class="keyword">byte</span> <span class="built_in">value</span> representing <span class="operator">the</span> <span class="built_in">seconds</span> since <span class="operator">the</span> Unix epoch,
+- <span class="number">3</span>-<span class="keyword">byte</span> machine identifier,
+- <span class="number">2</span>-<span class="keyword">byte</span> <span class="built_in">process</span> id, <span class="operator">and</span>
+- <span class="number">3</span>-<span class="keyword">byte</span> counter, starting <span class="operator">with</span> <span class="operator">a</span> <span class="built_in">random</span> <span class="built_in">value</span>.
+</code></pre><h2 id="自定义生成ObjectID">自定义生成ObjectID</h2><p>参考MongoDB的ObjectID生成规则，可自定义生成轻量级的惟一码MyUUID，只需占用8字节<br>其中MyUUID的生成规则如下：</p>
+<pre><code>|<span class="string"> 0 </span>|<span class="string"> 1 </span>|<span class="string"> 2 </span>|<span class="string"> 3 </span>|<span class="string"> 4 </span>|<span class="string"> 5 </span>|<span class="string"> 6 </span>|<span class="string"> 7 </span>|
+---------------------------------
+|<span class="string">     time      </span>|<span class="string">mid</span>|<span class="string">   inc     </span>|
+</code></pre><p>第０~３字节存放时间，第４字节存放MachineID，第５~７字节存放自增长ID</p>
+<h2 id="MyUUID源码">MyUUID源码</h2><p>在一般PC机上，１秒可生成十万不重复的MyUUID，在服务器上效率肯定更高，应该能够满足一般应用要求</p>
+<pre><code>import java.util.Date;
+
+<span class="keyword">class</span> MyUUID
+{
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> _machineID=<span class="number">0</span>;
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> _incID=<span class="number">0</span>;
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getMachineID</span><span class="params">()</span> </span>{
+        <span class="comment">//复杂些的可以通过主机主板序列号、IP、硬盘序列号等生成机器码，简单起见默认为１</span>
+        _machineID+=<span class="number">1</span>;
+        <span class="keyword">return</span> _machineID%<span class="number">127</span>;
+    }
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getInc</span><span class="params">()</span>
+    </span>{
+        <span class="comment">//一般使用Memcached统一维护一个全局自增ID，简单起见默认为１</span>
+        _incID+=<span class="number">1</span>;
+        <span class="keyword">return</span> _incID;
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">ObjectID</span><span class="params">()</span> </span>{  
+        <span class="keyword">long</span> v_time = (<span class="keyword">int</span>) (System.currentTimeMillis() / <span class="number">1000</span>);
+        <span class="keyword">int</span> v_machine = getMachineID();
+        <span class="keyword">int</span> v_inc = getInc();
+
+        <span class="keyword">long</span> myUUID=<span class="number">0</span>;
+        myUUID=myUUID | v_inc;
+        myUUID=myUUID | (v_machine&lt;&lt;<span class="number">24</span>);
+        myUUID=myUUID | (v_time&lt;&lt;<span class="number">32</span>);
+
+        <span class="keyword">return</span> myUUID;
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reverseObjectID</span><span class="params">(<span class="keyword">long</span> myUUID)</span> 
+    </span>{
+        <span class="comment">//反向解析myUUID</span>
+        <span class="keyword">int</span> v_inc =(<span class="keyword">int</span>) myUUID &amp; <span class="number">0xFFFFFF</span>;<span class="comment">//取出最右边3字节（即24bit）的值，每个16进制数存储4bit</span>
+        <span class="keyword">int</span> v_machine=(<span class="keyword">int</span>) (myUUID &gt;&gt;&gt; <span class="number">24</span>) &amp; <span class="number">0xFF</span>;<span class="comment">//无符号右移24位，然后取最右边1字节的值</span>
+        <span class="keyword">long</span> v_time=(myUUID &gt;&gt;&gt;<span class="number">32</span>) &amp; <span class="number">0xFFFFFFFF</span>;<span class="comment">//无符号右移32位，然后取四字节的秒数</span>
+
+        System.out.println(<span class="string">"v_time="</span>+Long.toHexString(v_time));
+        System.out.println(<span class="string">"时间为："</span>+<span class="keyword">new</span> java.util.Date(v_time*<span class="number">1000</span>));
+        System.out.println(<span class="string">"v_machine="</span>+v_machine);
+        System.out.println(<span class="string">"inc="</span>+v_inc);
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> 
+    </span>{
+        <span class="keyword">long</span> objectid;
+        <span class="keyword">long</span> id1=<span class="number">0</span>,id2=<span class="number">0</span>;
+
+        <span class="comment">//生成100000个MyUUID</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">100000</span>; i++)
+        {
+            objectid=ObjectID();
+            System.out.println(<span class="string">"MyUUID="</span>+Long.toHexString(objectid));
+
+            <span class="keyword">if</span> (i==<span class="number">0</span>)
+                id1=objectid;
+            <span class="keyword">else</span> <span class="keyword">if</span> (i==<span class="number">99999</span>)
+                id2=objectid;
+            <span class="keyword">else</span>;
+        }
+
+        System.out.println(<span class="string">"反向解析MyUUID..................."</span>);
+        reverseObjectID(id1);
+        reverseObjectID(id2);
+    }
+}
+</code></pre>
+      
+      
+  <div class="article-statement">
+    <hr>  
+    1.除非注明，本博文章均为原创，转载请以链接形式标明本文地址。<br>
+    2.本博文章只代表博主当时的观点或结论，与博主公司没有任何关系。<br>
+  </div>
+
+
+
+    </div>
+    
+    <footer class="article-footer">
+      
+        <a data-url="http://liuziquan.github.io/2015/09/24/浅度解析MongoDB的ObjectID生成规则/" data-id="ciexw7xww00066smkq6y9cmru" class="article-share-link">分享到</a>
+      
+
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MongoDB/">MongoDB</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/09/23/Hadoop基础/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Hadoop基础</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">推荐文章</h3>
+    <div class="widget">
+      <ul>
+        
+        
+          
+          <li>
+            <a href="http://shijiajie.com/2015/08/29/hexo-theme-landscape-plus-optimize/" target="_blank">1. Hexo官方主题landscape-plus优化</a>
+          </li>
+        
+          
+          <li>
+            <a href="http://www.cnblogs.com/zhcncn/p/4097881.html" target="_blank">2. Hexo搭建Github静态博客</a>
+          </li>
+        
+          
+          <li>
+            <a href="http://blog.fens.me/hexo-blog-github/" target="_blank">3. Hexo在github上构建免费的Web应用</a>
+          </li>
+        
+          
+          <li>
+            <a href="http://blog.lmintlcx.com/post/blog-with-hexo.html" target="_blank">4. 使用Hexo搭建博客</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/DB2/" style="font-size: 15px;">DB2</a> <a href="/tags/HBase/" style="font-size: 20px;">HBase</a> <a href="/tags/Hadoop/" style="font-size: 10px;">Hadoop</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/DB2/">DB2</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/HBase/">HBase</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hadoop/">Hadoop</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MongoDB/">MongoDB</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年 09月</a><span class="archive-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://www.cnblogs.com/shi0090/" target="_blank">石佳劼的博客园</a>
+          </li>
+        
+          <li>
+            <a href="https://github.com/stone0090/" target="_blank">石佳劼的GitHub</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  </script>
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      Copyright &copy; 2012 - 2015 <a href="http://liuziquan.github.io/" target="_blank">liuziquan</a>.
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+
+<!-- 百度分享 start -->
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</div>
+</body>
+</html>

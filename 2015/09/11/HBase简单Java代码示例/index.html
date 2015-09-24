@@ -1,0 +1,573 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>HBase简单Java代码示例 | Data change world</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Set render engine for 360 browser -->
+  <meta name="renderer" content="webkit">
+  <!-- No Baidu Siteapp-->
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+  <meta name="description" content="这里我们用一个学生成绩表作为例子,对HBase的基本操作和基本概念进行讲解:下面是学生的成绩表:
+
+
+
+name
+grade
+course:math
+course:art
+
+
+
+
+Tom
+1
+87
+97
+
+
+Jerry
+2
+100
+80
+
+
+
+这里grade对于表来说是一个列,course对于表来说是一个列族,这个列族由两个列组成:math和art,当然我们可以根据我们的需要在course中建立更">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HBase简单Java代码示例">
+<meta property="og:url" content="http://liuziquan.github.io/2015/09/11/HBase简单Java代码示例/index.html">
+<meta property="og:site_name" content="Data change world">
+<meta property="og:description" content="这里我们用一个学生成绩表作为例子,对HBase的基本操作和基本概念进行讲解:下面是学生的成绩表:
+
+
+
+name
+grade
+course:math
+course:art
+
+
+
+
+Tom
+1
+87
+97
+
+
+Jerry
+2
+100
+80
+
+
+
+这里grade对于表来说是一个列,course对于表来说是一个列族,这个列族由两个列组成:math和art,当然我们可以根据我们的需要在course中建立更">
+<meta property="og:updated_time" content="2015-09-11T07:26:17.988Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HBase简单Java代码示例">
+<meta name="twitter:description" content="这里我们用一个学生成绩表作为例子,对HBase的基本操作和基本概念进行讲解:下面是学生的成绩表:
+
+
+
+name
+grade
+course:math
+course:art
+
+
+
+
+Tom
+1
+87
+97
+
+
+Jerry
+2
+100
+80
+
+
+
+这里grade对于表来说是一个列,course对于表来说是一个列族,这个列族由两个列组成:math和art,当然我们可以根据我们的需要在course中建立更">
+  
+  
+    <link rel="icon" href="/img/logo.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- Add to homescreen for Chrome on Android -->    
+    <link rel="icon" sizes="192x192" href="/img/logo.png">
+    <!-- Add to homescreen for Safari on iOS -->
+    <link rel="apple-touch-icon-precomposed" href="/img/logo.png">    
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="/img/logo.png">
+    <meta name="msapplication-TileColor" content="#0e90d2">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Data change world</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Anything can be quantified</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <!--
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="liuziquan.github.io">
+        </form>
+      </div>
+      -->
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-HBase简单Java代码示例" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/09/11/HBase简单Java代码示例/" class="article-date">
+  <time datetime="2015-09-10T16:00:00.000Z" itemprop="datePublished">2015-09-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/HBase/">HBase</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      HBase简单Java代码示例
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+<!-- Table of Contents -->
+
+
+        <p>这里我们用一个学生成绩表作为例子,对HBase的基本操作和基本概念进行讲解:<br>下面是学生的成绩表:</p>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>grade</th>
+<th>course:math</th>
+<th>course:art</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tom</td>
+<td>1</td>
+<td>87</td>
+<td>97</td>
+</tr>
+<tr>
+<td>Jerry</td>
+<td>2</td>
+<td>100</td>
+<td>80</td>
+</tr>
+</tbody>
+</table>
+<p>这里grade对于表来说是一个列,course对于表来说是一个列族,这个列族由两个列组成:math和art,<br>当然我们可以根据我们的需要在course中建立更多的列族,如computer,physics等相应的列添加入course列族.<br>有了上面的想法和需求,我们就可以在HBase中建立相应的数据表啦!</p>
+<ol>
+<li><p>建立一个表格 scores 具有两个列族grade 和courese</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">002</span>:<span class="number">0</span>&gt; create <span class="string">'scores'</span>, <span class="string">'grade'</span>, <span class="string">'course'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">4.1610</span> seconds
+</code></pre></li>
+<li><p>查看当先HBase中具有哪些表</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">003</span>:<span class="number">0</span>&gt; list
+scores
+<span class="number">1</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0210</span> seconds
+</code></pre></li>
+<li><p>查看表的构造</p>
+<pre><code>hbase(main):<span class="number">004</span>:<span class="number">0</span>&gt; describe <span class="string">'scores'</span>
+{NAME =&gt; <span class="string">'scores'</span>, IS_ROOT =&gt; <span class="string">'false'</span>, IS_META =&gt; <span class="string">'false'</span>, FAMILIES =&gt; [{NAME =&gt; <span class="string">'course'</span>, BLOOMFILTER =&gt; <span class="string">'false'</span>, IN_MEMORY =&gt; <span class="string">'false'</span>, LENGTH =&gt; <span class="string">'2147483647'</span>, BLOCKCACHE =&gt; <span class="string">'false'</span>, VERSIONS =&gt; <span class="string">'3'</span>, TTL =&gt; <span class="string">'-1'</span>, COMPRESSION =&gt; <span class="string">'NONE'</span>}, {NAME =&gt; <span class="string">'grade'</span>, BLOOMFILTER =&gt; <span class="string">'false'</span>, IN_MEMORY =&gt; <span class="string">'false'</span>, LENGTH =&gt; <span class="string">'2147483647'</span>, BLOCKCACHE =&gt; <span class="string">'false'</span>, VERSIONS =&gt; <span class="string">'3'</span>, TTL =&gt; <span class="string">'-1'</span>, COMPRESSION =&gt; <span class="string">'NONE'</span>}]}
+<span class="number">1</span> row(s) <span class="keyword">in</span> <span class="number">0.0130</span> seconds
+</code></pre></li>
+<li><p>加入一行数据,行名称为 Tom 列族grad的列名为”” 值位1</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">005</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Tom'</span>, <span class="string">'grade:'</span>, <span class="string">'1'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0070</span> seconds
+</code></pre></li>
+<li><p>给Tom这一行的数据的列族添加一列</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">006</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Tom'</span>, <span class="string">'course:math'</span>, <span class="string">'87'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0040</span> seconds
+</code></pre></li>
+<li><p>给Tom这一行的数据的列族添加一列</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">007</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Tom'</span>, <span class="string">'course:art'</span>, <span class="string">'97'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0030</span> seconds
+</code></pre></li>
+<li><p>加入一行数据,行名称为 Jerry 列族grad的列名为”” 值位2</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">008</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Jerry'</span>, <span class="string">'grade:'</span>, <span class="string">'2'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0040</span> seconds
+</code></pre></li>
+<li><p>给Jerry这一行的数据的列族添加一列</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">009</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Jerry'</span>, <span class="string">'course:math'</span>, <span class="string">'100'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0030</span> seconds
+</code></pre></li>
+<li><p>给Jerry这一行的数据的列族添加一列</p>
+<pre><code><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">010</span>:<span class="number">0</span>&gt; put <span class="string">'scores'</span>, <span class="string">'Jerry'</span>, <span class="string">'course:art'</span>, <span class="string">'80'</span>
+<span class="number">0</span> <span class="function"><span class="title">row</span><span class="params">(s)</span></span> <span class="keyword">in</span> <span class="number">0.0050</span> seconds
+</code></pre></li>
+<li><p>查看scores表中Tom的相关数据</p>
+<pre><code>hbase(main):011:<span class="operator">0&gt; <span class="keyword">get</span> <span class="string">'scores'</span>, <span class="string">'Tom'</span>
+<span class="keyword">COLUMN</span>                       CELL
+course:art                  <span class="keyword">timestamp</span>=<span class="number">1224726394286</span>, <span class="keyword">value</span>=<span class="number">97</span>
+course:math                 <span class="keyword">timestamp</span>=<span class="number">1224726377027</span>, <span class="keyword">value</span>=<span class="number">87</span>
+grade:                      <span class="keyword">timestamp</span>=<span class="number">1224726360727</span>, <span class="keyword">value</span>=<span class="number">1</span>
+<span class="number">3</span> <span class="keyword">row</span>(s) <span class="keyword">in</span> <span class="number">0.0070</span> seconds</span>
+</code></pre></li>
+<li><p>查看scores表中所有数据</p>
+<pre><code>hbase(main):012:0&gt; scan 'scores'
+ROW                          COLUMN+CELL
+Tom                         column=course:art, timestamp=1224726394286, value=97
+Tom                         column=course:math, timestamp=1224726377027, value=87
+Tom                         column=grade:, timestamp=1224726360727, value=1
+Jerry                        column=course:art, timestamp=1224726424967, value=80
+Jerry                        column=course:math, timestamp=1224726416145, value=100
+Jerry                        column=grade:, timestamp=1224726404965, value=2
+6 row(s) in 0.0410 seconds
+</code></pre></li>
+<li><p>查看scores表中所有数据courses列族的所有数据</p>
+<pre><code>hbase(main):013:<span class="operator">0&gt; <span class="keyword">scan</span> <span class="string">'scores'</span>,{<span class="keyword">COLUMN</span>=&gt;[<span class="string">'course'</span>]}        
+<span class="keyword">ROW</span>                                      <span class="keyword">COLUMN</span>+CELL                                                                                                        
+ Jerry                                   <span class="keyword">column</span>=course:art, <span class="keyword">timestamp</span>=<span class="number">1441953970540</span>, <span class="keyword">value</span>=<span class="number">80</span>                                                               
+ Jerry                                   <span class="keyword">column</span>=course:math, <span class="keyword">timestamp</span>=<span class="number">1441953959676</span>, <span class="keyword">value</span>=<span class="number">100</span>                                                             
+ Tom                                     <span class="keyword">column</span>=course:art, <span class="keyword">timestamp</span>=<span class="number">1441953935469</span>, <span class="keyword">value</span>=<span class="number">97</span>                                                               
+ Tom                                     <span class="keyword">column</span>=course:math, <span class="keyword">timestamp</span>=<span class="number">1441953923125</span>, <span class="keyword">value</span>=<span class="number">87</span>                                                              
+<span class="number">2</span> <span class="keyword">row</span>(s) <span class="keyword">in</span> <span class="number">0.0640</span> seconds</span>
+</code></pre></li>
+</ol>
+<p>上面就是HBase的基本shell操作的一个例子,可以看出,hbase的shell还是比较简单易用的,<br>从中也可以看出HBase shell缺少很多传统sql中的一些类似于like等相关操作,<br>当然,HBase作为BigTable的一个开源实现,而BigTable是作为 google业务的支持模型,<br>很多sql语句中的一些东西可能还真的不需要.<br>当然,通过程序我们也可以对HBase进行相关的操作.下面的程序就完成了上面shell操作的内容:</p>
+<pre><code><span class="built_in">import</span> java.io.IOException;
+<span class="built_in">import</span> java.io.ByteArrayOutputStream;
+<span class="built_in">import</span> java.io.DataOutputStream;
+<span class="built_in">import</span> java.io.ByteArrayInputStream;
+<span class="built_in">import</span> java.io.DataInputStream;
+<span class="built_in">import</span> java.util.Map;
+<span class="built_in">import</span> org.apache.hadoop.io.Writable;
+<span class="built_in">import</span> org.apache.hadoop.io.IntWritable;
+<span class="built_in">import</span> org.apache.hadoop.hbase.HBaseConfiguration;
+<span class="built_in">import</span> org.apache.hadoop.hbase.HTableDescriptor;
+<span class="built_in">import</span> org.apache.hadoop.hbase.HColumnDescriptor;
+<span class="built_in">import</span> org.apache.hadoop.hbase.client.HBaseAdmin;
+<span class="built_in">import</span> org.apache.hadoop.hbase.client.HTable;
+<span class="built_in">import</span> org.apache.hadoop.hbase.io.BatchUpdate;
+<span class="built_in">import</span> org.apache.hadoop.hbase.io.RowResult;
+<span class="built_in">import</span> org.apache.hadoop.hbase.io.Cell;
+<span class="built_in">import</span> org.apache.hadoop.hbase.util.Writables;
+public class HBaseBasic {
+    public static void main<span class="params">(String[] args)</span> throws Exception {
+        HBaseConfiguration config = new HBaseConfiguration<span class="params">()</span>;
+        HBaseAdmin admin = new HBaseAdmin<span class="params">(config)</span>;
+        <span class="keyword">if</span> <span class="params">(admin.tableExists<span class="params">(<span class="string">"scores"</span>)</span>)</span> {
+            System.out.println<span class="params">(<span class="string">"drop table"</span>)</span>;
+            admin.disableTable<span class="params">(<span class="string">"scores"</span>)</span>;
+            admin.deleteTable<span class="params">(<span class="string">"scores"</span>)</span>;
+        }
+
+        System.out.println<span class="params">(<span class="string">"create table"</span>)</span>;
+        HTableDescriptor tableDescripter = new HTableDescriptor<span class="params">(<span class="string">"scores"</span>.getBytes<span class="params">()</span>)</span>;
+        tableDescripter.addFamily<span class="params">(new HColumnDescriptor<span class="params">(<span class="string">"grade:"</span>)</span>)</span>;
+        tableDescripter.addFamily<span class="params">(new HColumnDescriptor<span class="params">(<span class="string">"course:"</span>)</span>)</span>;
+        admin.createTable<span class="params">(tableDescripter)</span>;
+        HTable table = new HTable<span class="params">(config, <span class="string">"scores"</span>)</span>;
+
+        System.out.println<span class="params">(<span class="string">"add Tom's data"</span>)</span>;
+        BatchUpdate tomUpdate = new BatchUpdate<span class="params">(<span class="string">"Tom"</span>)</span>;
+        tomUpdate.put<span class="params">(<span class="string">"grade:"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">1</span>)</span>)</span>)</span>;
+        tomUpdate.put<span class="params">(<span class="string">"course:math"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">87</span>)</span>)</span>)</span>;
+        tomUpdate.put<span class="params">(<span class="string">"course:art"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">97</span>)</span>)</span>)</span>;
+        table.commit<span class="params">(tomUpdate)</span>;
+
+        System.out.println<span class="params">(<span class="string">"add Jerry's data"</span>)</span>;
+        BatchUpdate jerryUpdate = new BatchUpdate<span class="params">(<span class="string">"Jerry"</span>)</span>;
+        jerryUpdate.put<span class="params">(<span class="string">"grade:"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">2</span>)</span>)</span>)</span>;
+        jerryUpdate.put<span class="params">(<span class="string">"course:math"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">100</span>)</span>)</span>)</span>;
+        jerryUpdate.put<span class="params">(<span class="string">"course:art"</span>, Writables.getBytes<span class="params">(new IntWritable<span class="params">(<span class="number">80</span>)</span>)</span>)</span>;
+        table.commit<span class="params">(jerryUpdate)</span>;
+        <span class="keyword">for</span> <span class="params">(RowResult row : table.getScanner<span class="params">(new String[] { <span class="string">"course:"</span> })</span>)</span> {
+            System.out.format<span class="params">(<span class="string">"ROW\t%s\n"</span>, new String<span class="params">(row.getRow<span class="params">()</span>)</span>)</span>;
+            <span class="keyword">for</span> <span class="params">(Map.Entry&lt;byte[], Cell&gt; entry : row.entrySet<span class="params">()</span>)</span> {
+                String column = new String<span class="params">(entry.getKey<span class="params">()</span>)</span>;
+                Cell cell = entry.getValue<span class="params">()</span>;
+                IntWritable value = new IntWritable<span class="params">()</span>;
+                Writables.copyWritable<span class="params">(cell.getValue<span class="params">()</span>, value)</span>;
+                System.out.format<span class="params">(<span class="string">" COLUMN\t%s\t%d\n"</span>, column, value.get<span class="params">()</span>)</span>;
+            }
+        }
+    }
+}
+</code></pre><p>输出如下:</p>
+<pre><code><span class="operator"><span class="keyword">drop</span> <span class="keyword">table</span>
+<span class="number">09</span>/<span class="number">07</span>/<span class="number">11</span> <span class="number">08</span>:<span class="number">51</span>:<span class="number">59</span> INFO <span class="keyword">client</span>.HBaseAdmin: Disabled scores
+<span class="number">09</span>/<span class="number">07</span>/<span class="number">11</span> <span class="number">08</span>:<span class="number">51</span>:<span class="number">59</span> INFO <span class="keyword">client</span>.HBaseAdmin: Deleted scores
+<span class="keyword">create</span> <span class="keyword">table</span>
+<span class="keyword">add</span> Tom<span class="string">'s data
+add Jerry'</span>s <span class="keyword">data</span>
+<span class="keyword">ROW</span>     Tom
+  <span class="keyword">COLUMN</span>        course:art      <span class="number">97</span>
+  <span class="keyword">COLUMN</span>        course:math     <span class="number">87</span>
+<span class="keyword">ROW</span>     Jerry
+  <span class="keyword">COLUMN</span>        course:art      <span class="number">80</span>
+  <span class="keyword">COLUMN</span>        course:math     <span class="number">100</span></span>
+</code></pre>
+      
+      
+  <div class="article-statement">
+    <hr>  
+    1.除非注明，本博文章均为原创，转载请以链接形式标明本文地址。<br>
+    2.本博文章只代表博主当时的观点或结论，与博主公司没有任何关系。<br>
+  </div>
+
+
+
+    </div>
+    
+    <footer class="article-footer">
+      
+        <a data-url="http://liuziquan.github.io/2015/09/11/HBase简单Java代码示例/" data-id="ciefazop400006kmk4v39lbe8" class="article-share-link">分享到</a>
+      
+
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HBase/">HBase</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/09/11/HBase入门实例/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          HBase入门实例
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/09/11/HBase应用之Table设计/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">HBase应用之Table设计</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">推荐文章</h3>
+    <div class="widget">
+      <ul>
+        
+        
+          
+          <li>
+            <a href="http://shijiajie.com/2015/08/29/hexo-theme-landscape-plus-optimize/" target="_blank">1. Hexo官方主题landscape-plus优化</a>
+          </li>
+        
+          
+          <li>
+            <a href="http://www.cnblogs.com/zhcncn/p/4097881.html" target="_blank">2. Hexo搭建Github静态博客</a>
+          </li>
+        
+          
+          <li>
+            <a href="http://blog.fens.me/hexo-blog-github/" target="_blank">3. Hexo在github上构建免费的Web应用</a>
+          </li>
+        
+          
+          <li>
+            <a href="http://blog.lmintlcx.com/post/blog-with-hexo.html" target="_blank">4. 使用Hexo搭建博客</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/DB2/" style="font-size: 15px;">DB2</a> <a href="/tags/HBase/" style="font-size: 20px;">HBase</a> <a href="/tags/Hadoop/" style="font-size: 10px;">Hadoop</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/DB2/">DB2</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/HBase/">HBase</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hadoop/">Hadoop</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MongoDB/">MongoDB</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年 09月</a><span class="archive-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://www.cnblogs.com/shi0090/" target="_blank">石佳劼的博客园</a>
+          </li>
+        
+          <li>
+            <a href="https://github.com/stone0090/" target="_blank">石佳劼的GitHub</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  </script>
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      Copyright &copy; 2012 - 2015 <a href="http://liuziquan.github.io/" target="_blank">liuziquan</a>.
+    </div>
+  </div>
+</footer>
+
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+
+<!-- 百度分享 start -->
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</div>
+</body>
+</html>
