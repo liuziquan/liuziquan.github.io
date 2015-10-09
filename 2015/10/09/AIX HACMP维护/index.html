@@ -41,34 +41,28 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="AIX重启shutdown -Fr 
-查看HACMP进程是否正常#  lssrc -g cluster 
+<meta name="description" content="AIX重启切记不可使用reboot命令，这个命令在单用户模式下是重启服务器，而多用户模式下，该命令只是关机，而且可能会导致文件系统的损坏。正确的重启方式是shutdown -Fr。
+查看HACMP进程是否正常#lssrc -g cluster 
 subsystem    group    PID    status
 clstrmgrES     cluster   22454  active
-clinfoES    cluster   15874  active
-HACMP服务的启动和停止
-启动: 要两个节点同时启动，停止时只停止1个">
+cl">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AIX HACMP维护">
 <meta property="og:url" content="http://liuziquan.github.io/2015/10/09/AIX HACMP维护/index.html">
 <meta property="og:site_name" content="Data change world">
-<meta property="og:description" content="AIX重启shutdown -Fr 
-查看HACMP进程是否正常#  lssrc -g cluster 
+<meta property="og:description" content="AIX重启切记不可使用reboot命令，这个命令在单用户模式下是重启服务器，而多用户模式下，该命令只是关机，而且可能会导致文件系统的损坏。正确的重启方式是shutdown -Fr。
+查看HACMP进程是否正常#lssrc -g cluster 
 subsystem    group    PID    status
 clstrmgrES     cluster   22454  active
-clinfoES    cluster   15874  active
-HACMP服务的启动和停止
-启动: 要两个节点同时启动，停止时只停止1个">
-<meta property="og:updated_time" content="2015-10-09T02:28:54.396Z">
+cl">
+<meta property="og:updated_time" content="2015-10-09T02:35:07.141Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AIX HACMP维护">
-<meta name="twitter:description" content="AIX重启shutdown -Fr 
-查看HACMP进程是否正常#  lssrc -g cluster 
+<meta name="twitter:description" content="AIX重启切记不可使用reboot命令，这个命令在单用户模式下是重启服务器，而多用户模式下，该命令只是关机，而且可能会导致文件系统的损坏。正确的重启方式是shutdown -Fr。
+查看HACMP进程是否正常#lssrc -g cluster 
 subsystem    group    PID    status
 clstrmgrES     cluster   22454  active
-clinfoES    cluster   15874  active
-HACMP服务的启动和停止
-启动: 要两个节点同时启动，停止时只停止1个">
+cl">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -186,7 +180,7 @@ HACMP服务的启动和停止
       <div class="post-meta">
         <span class="post-time">
           发表于
-          <time itemprop="dateCreated" datetime="2015-10-09T10:28:54+08:00" content="2015-10-09">
+          <time itemprop="dateCreated" datetime="2015-10-09T10:35:07+08:00" content="2015-10-09">
             2015-10-09
           </time>
         </span>
@@ -220,14 +214,14 @@ HACMP服务的启动和停止
       
 
       
-        <span itemprop="articleBody"><h2 id="AIX重启">AIX重启</h2><pre><code><span class="built_in">shutdown</span> -Fr 
-</code></pre><h2 id="查看HACMP进程是否正常">查看HACMP进程是否正常</h2><pre><code>#  lssrc -g <span class="keyword">cluster</span> 
+        <span itemprop="articleBody"><h2 id="AIX重启">AIX重启</h2><p><strong>切记不可使用reboot命令</strong>，这个命令在单用户模式下是重启服务器，而多用户模式下，该命令只是关机，而且<strong>可能会导致文件系统的损坏</strong>。<br>正确的重启方式是<strong>shutdown -Fr</strong>。</p>
+<h2 id="查看HACMP进程是否正常">查看HACMP进程是否正常</h2><pre><code>#lssrc -g <span class="keyword">cluster</span> 
 subsystem    <span class="keyword">group</span>    PID    status
 clstrmgrES     <span class="keyword">cluster</span>   <span class="number">22454</span>  active
 clinfoES    <span class="keyword">cluster</span>   <span class="number">15874</span>  active
 </code></pre><h2 id="HACMP服务的启动和停止">HACMP服务的启动和停止</h2><ul>
 <li><p>启动: 要两个节点同时启动，停止时只停止1个节点</p>
-<pre><code># smitty clstart 
+<pre><code>#smitty clstart 
 <span class="operator"><span class="keyword">Start</span> Cluster Services 
 
 [输入字段]                           
@@ -239,7 +233,7 @@ BROADCAST message <span class="keyword">at</span> <span class="keyword">startup<
 Reacquire resources <span class="keyword">after</span> forced down ? <span class="literal">false</span> +</span>
 </code></pre></li>
 <li><p>停止: 停止的时只停止1个节点</p>
-<pre><code># smitty clstop 
+<pre><code>#smitty clstop 
 <span class="operator"><span class="keyword">Stop</span> Cluster Services
 [输入字段]
 * <span class="keyword">Stop</span> <span class="keyword">now</span>, <span class="keyword">on</span> <span class="keyword">system</span> restart <span class="keyword">or</span> <span class="keyword">both</span> <span class="keyword">now</span> +
