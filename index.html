@@ -158,6 +158,110 @@
           
           
             
+              <a class="post-title-link" href="/2015/10/09/AIX HACMP维护/" itemprop="url">
+                AIX HACMP维护
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-10-09T10:28:54+08:00" content="2015-10-09">
+            2015-10-09
+          </time>
+        </span>
+
+        
+          <span class="post-category" >
+            &nbsp; | &nbsp; 分类于
+            
+              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <a href="/categories/AIX/" itemprop="url" rel="index">
+                  <span itemprop="name">AIX</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h2 id="AIX重启">AIX重启</h2><pre><code><span class="built_in">shutdown</span> -Fr 
+</code></pre><h2 id="查看HACMP进程是否正常">查看HACMP进程是否正常</h2><pre><code>#  lssrc -g <span class="keyword">cluster</span> 
+subsystem    <span class="keyword">group</span>    PID    status
+clstrmgrES     <span class="keyword">cluster</span>   <span class="number">22454</span>  active
+clinfoES    <span class="keyword">cluster</span>   <span class="number">15874</span>  active
+</code></pre><h2 id="HACMP服务的启动和停止">HACMP服务的启动和停止</h2><ul>
+<li><p>启动: 要两个节点同时启动，停止时只停止1个节点</p>
+<pre><code># smitty clstart 
+<span class="operator"><span class="keyword">Start</span> Cluster Services 
+
+[输入字段]                           
+* <span class="keyword">Start</span> <span class="keyword">now</span>, <span class="keyword">on</span> <span class="keyword">system</span> restart <span class="keyword">or</span> <span class="keyword">both</span> <span class="keyword">now</span> +
+<span class="keyword">Start</span> Cluster Services <span class="keyword">on</span> these nodes [EASNODE1 EASNODE2] +
+BROADCAST message <span class="keyword">at</span> <span class="keyword">startup</span>? <span class="literal">true</span> +
+<span class="keyword">Startup</span> Cluster <span class="keyword">Lock</span> Services? <span class="literal">false</span> +
+<span class="keyword">Startup</span> Cluster Information Daemon? <span class="literal">true</span> +   
+Reacquire resources <span class="keyword">after</span> forced down ? <span class="literal">false</span> +</span>
+</code></pre></li>
+<li><p>停止: 停止的时只停止1个节点</p>
+<pre><code># smitty clstop 
+<span class="operator"><span class="keyword">Stop</span> Cluster Services
+[输入字段]
+* <span class="keyword">Stop</span> <span class="keyword">now</span>, <span class="keyword">on</span> <span class="keyword">system</span> restart <span class="keyword">or</span> <span class="keyword">both</span> <span class="keyword">now</span> +
+<span class="keyword">Stop</span> Cluster Services <span class="keyword">on</span> these nodes [EASNODE1] +
+BROADCAST cluster <span class="keyword">shutdown</span>? <span class="literal">true</span> +
+* <span class="keyword">Shutdown</span> <span class="keyword">mode</span> graceful[<span class="keyword">MOVE</span> <span class="keyword">GROUP</span> RESOURE]+  </span>
+</code></pre></li>
+</ul>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2015/09/24/Hadoop基础/" itemprop="url">
                 Hadoop基础
               </a>
@@ -374,6 +478,104 @@
     }
 }
 </code></pre></span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/09/18/DB2的备份（backup）和恢复（RESTORE）数据库方法/" itemprop="url">
+                DB2的备份（backup）和恢复（RESTORE）数据库方法
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-09-18T00:00:00+08:00" content="2015-09-18">
+            2015-09-18
+          </time>
+        </span>
+
+        
+          <span class="post-category" >
+            &nbsp; | &nbsp; 分类于
+            
+              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <a href="/categories/DB2/" itemprop="url" rel="index">
+                  <span itemprop="name">DB2</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>本文转载自ＱＱ天堂<a href="http://www.cnblogs.com/QQParadise/articles/2376488.html" target="_blank" rel="external">DB2的备份（backup）和恢复（RESTORE）数据库方法</a></p>
+<h2 id="一、备份（backup）数据库">一、备份（backup）数据库</h2><p>1、离线全备份</p>
+<p>1）、首先确保没有用户使用DB2:<br>db2 list applications for db sample<br>2）、停掉数据库并重新启动，以便断掉所有连接：<br>db2stop force<br>db2start<br>3）、执行备份命令：（使用TSM作为备份的介质）<br>db2 backup db sample use tsm<br>备份成功，将会返回一个时间戳。<br>4）、检查备份成功：<br>db2 list history backup all for sample 可以看到多了这个备份的纪录。<br>db2adutl query 命令也可以看到返回值。<br>5）、备注：<br>首先对主节点（catalog表空间在的节点）执行备份命令，再对另外的节点也做这个操作。</p>
+<p>2、 在线备份：</p>
+<p>1）、首先打开一下支持在线备份的数据库配置参数：<br>db2 update db cfg for sample using userexit on 启用用户出口<br>db2 update db cfg for sample using logretain on 启用归档日志<br>db2 update db cfg for sample using trackmod on 启用增量备份功能<br>(需要各个Node都分别做设置)<br>开启这些参数后，数据库处于backup pending状态，要求做数据库的离线全备份。做一下离线全备份，参考上面的命令。<br>2）、在线备份命令如下：<br>db2 backup db sample online use tsm<br>备份成功，返回一个时间戳。<br>3）、同样可以用db2adutl 和db2 list history察看备份纪录。<br>4）、备注：<br>同样，对每个节点都做这个操作。</p>
+<p>3、 在线增量备份</p>
+<p>1）、在开启了必须的三个参数的情况下，做增量备份：<br>db2 backup db sample online incremental use tsm<br>备份成功，返回一个时间戳。<br>2）、同样可以用db2adutl 和db2 list history察看备份纪录。<br>3）、还有一种delta的备份：<br>db2 backup db sample online incremental delta use tsm<br>这两种备份的区别，类似Oracle Exports的Incremental和Cumulative方式，db2的incremental对应oracle的cumulative方式，而db2的delta方式则对应oracle的incremental方式。<br>4）、备注：<br>同样，对每个节点都做这个操作。</p>
+<p>二、恢复（RESTORE）数据库</p>
+<p>1、新建数据库</p>
+<p>在一般管理工具， 创建数据库（别名要和原来的数据库别名一致）。</p>
+<p>2、恢复数据库</p>
+<p>1）：断开连接：将网络断开，切断所有的客户连接，如果不行，先重启。(如果有客户端连接到DB2服务器，恢复不行的，包括控制中心)</p>
+<p>2）：恢复离线备份：<br>　　 设：<br>　　 你的备份那个DB2文件在：C:\Temp<br>　　 你的数据库名称：DBName<br>　　 那么对应DB2的备份/恢复文件的格式是这样的：<br>　　 C:\Temp\DBName.0\DB2CTLSV\NODE0000\CATN0000\20090706\HHMMSS.001</p>
+<p>备份时你只是指定了一个C:\Temp目录，后面那么目录为DB2备份时生成。<br>　　 然后是它的文件名，一般格式是：HHMMSS.001,即:小时分钟秒数.001，也就是说后面那个20020828是备份日期，文件名是备份时间。<br>　　<br>　　 好，清楚后，你就可以写SQL命令进行恢复了<br>　　 运行: Start-&gt;Program-&gt;IBM DB2-&gt;Command Center<br>　　 然后：不要登陆，直接输入下列命令：<br>　　<br>以下为引用的内容：<br>RESTORE DATABASE NewDBName FROM C:\Temp\ TAKEN AT<br>20020919094932 TO D: INTO OldDBName WITH 2 BUFFERS BUFFER 1024<br>WITHOUT PROMPTING 　<br>　　你要改<br>　　NewDBName ==》你的新建数据库名称<br>　　C:\TEMP\ ==&gt; 你备份DB2的目录，像上面所说<br>　　20020919094932 ==&gt; 一看你DB2的目录和文件组合成这东东<br>　　D: ==&gt; 新建的数据库放在哪个盘上<br>　　OldDBName ==&gt; 备份前那个数据库叫什么<br>　　<br>　　好了，CTRL+ENTER， 如果不行请检查，如果再不行，请重启，如果再不行，。。。阿门，上帝保佑你</p>
+<p>3）：实例<br>　　备份文件路径：C:\Temp\ipmdemo.0\DB2CTLSV\NODE0000\CATN0000\20090622\164642.001<br>其中，备份日期：20090622 备份文件：164642.001<br>　　新建数据库名：ipmdemo<br>　　数据库文件时间戳： 20090622164642</p>
+<p>恢复命令为：db2 restore database ipmdemo from C:\Temp taken at 20090622164642</p>
+<p>3、恢复在线备份</p>
+<p>1）、恢复。恢复命令为：db2 restore database DBName from C:\Temp taken at 20090622164642</p>
+<p>2）、前滚。前滚命令为：db2 rollforward db DBName to end of logs（或者：控制中心-&gt;所有数据库-&gt;dbname -&gt;右键-&gt;前滚）</p>
+<p>3）、停止前滚。停止前滚命令为：db2 rollforward db DBName stop（或者：控制中心-&gt;所有数据库-&gt;dbname -&gt;右键-&gt;停止前滚）</p>
+<p>三、有关说明</p>
+<p>1、恢复操作也有online和offline的,区别如同backup的操作。<br>2、按照表空间的备份和恢复类似，加子句TABLESPACE ( tablespace-name )即可。表空间级别的备份/恢复操作要求数据库处于归档日志和启用增量备份模式下。<br>3、恢复的例子中只做了版本恢复。若还有更新的全备份和增量备份的image，可以依次做恢复（注意使用db2ckrst的建议恢复次序和次数）后，再做roll forward。</p>
+</span>
         
       
     </div>
@@ -637,104 +839,6 @@ BUFFERS BUFFER buff-<span class="keyword">size</span> PARALLELISM <span class="k
 <li>通过 SAP SERVICES MARKETPLACE：获得 SAP 产品和服务。SAP 客户可以通过 SAP 客户 ID 访问 SAP NOTES。</li>
 <li>参与 developerWorks blogs 并加入 developerWorks 中文社区，查看开发人员推动的博客、论坛、组和维基，并与其他 developerWorks 用户交流。</li>
 </ul>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/09/18/DB2的备份（backup）和恢复（RESTORE）数据库方法/" itemprop="url">
-                DB2的备份（backup）和恢复（RESTORE）数据库方法
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于
-          <time itemprop="dateCreated" datetime="2015-09-18T00:00:00+08:00" content="2015-09-18">
-            2015-09-18
-          </time>
-        </span>
-
-        
-          <span class="post-category" >
-            &nbsp; | &nbsp; 分类于
-            
-              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                <a href="/categories/DB2/" itemprop="url" rel="index">
-                  <span itemprop="name">DB2</span>
-                </a>
-              </span>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><p>本文转载自ＱＱ天堂<a href="http://www.cnblogs.com/QQParadise/articles/2376488.html" target="_blank" rel="external">DB2的备份（backup）和恢复（RESTORE）数据库方法</a></p>
-<h2 id="一、备份（backup）数据库">一、备份（backup）数据库</h2><p>1、离线全备份</p>
-<p>1）、首先确保没有用户使用DB2:<br>db2 list applications for db sample<br>2）、停掉数据库并重新启动，以便断掉所有连接：<br>db2stop force<br>db2start<br>3）、执行备份命令：（使用TSM作为备份的介质）<br>db2 backup db sample use tsm<br>备份成功，将会返回一个时间戳。<br>4）、检查备份成功：<br>db2 list history backup all for sample 可以看到多了这个备份的纪录。<br>db2adutl query 命令也可以看到返回值。<br>5）、备注：<br>首先对主节点（catalog表空间在的节点）执行备份命令，再对另外的节点也做这个操作。</p>
-<p>2、 在线备份：</p>
-<p>1）、首先打开一下支持在线备份的数据库配置参数：<br>db2 update db cfg for sample using userexit on 启用用户出口<br>db2 update db cfg for sample using logretain on 启用归档日志<br>db2 update db cfg for sample using trackmod on 启用增量备份功能<br>(需要各个Node都分别做设置)<br>开启这些参数后，数据库处于backup pending状态，要求做数据库的离线全备份。做一下离线全备份，参考上面的命令。<br>2）、在线备份命令如下：<br>db2 backup db sample online use tsm<br>备份成功，返回一个时间戳。<br>3）、同样可以用db2adutl 和db2 list history察看备份纪录。<br>4）、备注：<br>同样，对每个节点都做这个操作。</p>
-<p>3、 在线增量备份</p>
-<p>1）、在开启了必须的三个参数的情况下，做增量备份：<br>db2 backup db sample online incremental use tsm<br>备份成功，返回一个时间戳。<br>2）、同样可以用db2adutl 和db2 list history察看备份纪录。<br>3）、还有一种delta的备份：<br>db2 backup db sample online incremental delta use tsm<br>这两种备份的区别，类似Oracle Exports的Incremental和Cumulative方式，db2的incremental对应oracle的cumulative方式，而db2的delta方式则对应oracle的incremental方式。<br>4）、备注：<br>同样，对每个节点都做这个操作。</p>
-<p>二、恢复（RESTORE）数据库</p>
-<p>1、新建数据库</p>
-<p>在一般管理工具， 创建数据库（别名要和原来的数据库别名一致）。</p>
-<p>2、恢复数据库</p>
-<p>1）：断开连接：将网络断开，切断所有的客户连接，如果不行，先重启。(如果有客户端连接到DB2服务器，恢复不行的，包括控制中心)</p>
-<p>2）：恢复离线备份：<br>　　 设：<br>　　 你的备份那个DB2文件在：C:\Temp<br>　　 你的数据库名称：DBName<br>　　 那么对应DB2的备份/恢复文件的格式是这样的：<br>　　 C:\Temp\DBName.0\DB2CTLSV\NODE0000\CATN0000\20090706\HHMMSS.001</p>
-<p>备份时你只是指定了一个C:\Temp目录，后面那么目录为DB2备份时生成。<br>　　 然后是它的文件名，一般格式是：HHMMSS.001,即:小时分钟秒数.001，也就是说后面那个20020828是备份日期，文件名是备份时间。<br>　　<br>　　 好，清楚后，你就可以写SQL命令进行恢复了<br>　　 运行: Start-&gt;Program-&gt;IBM DB2-&gt;Command Center<br>　　 然后：不要登陆，直接输入下列命令：<br>　　<br>以下为引用的内容：<br>RESTORE DATABASE NewDBName FROM C:\Temp\ TAKEN AT<br>20020919094932 TO D: INTO OldDBName WITH 2 BUFFERS BUFFER 1024<br>WITHOUT PROMPTING 　<br>　　你要改<br>　　NewDBName ==》你的新建数据库名称<br>　　C:\TEMP\ ==&gt; 你备份DB2的目录，像上面所说<br>　　20020919094932 ==&gt; 一看你DB2的目录和文件组合成这东东<br>　　D: ==&gt; 新建的数据库放在哪个盘上<br>　　OldDBName ==&gt; 备份前那个数据库叫什么<br>　　<br>　　好了，CTRL+ENTER， 如果不行请检查，如果再不行，请重启，如果再不行，。。。阿门，上帝保佑你</p>
-<p>3）：实例<br>　　备份文件路径：C:\Temp\ipmdemo.0\DB2CTLSV\NODE0000\CATN0000\20090622\164642.001<br>其中，备份日期：20090622 备份文件：164642.001<br>　　新建数据库名：ipmdemo<br>　　数据库文件时间戳： 20090622164642</p>
-<p>恢复命令为：db2 restore database ipmdemo from C:\Temp taken at 20090622164642</p>
-<p>3、恢复在线备份</p>
-<p>1）、恢复。恢复命令为：db2 restore database DBName from C:\Temp taken at 20090622164642</p>
-<p>2）、前滚。前滚命令为：db2 rollforward db DBName to end of logs（或者：控制中心-&gt;所有数据库-&gt;dbname -&gt;右键-&gt;前滚）</p>
-<p>3）、停止前滚。停止前滚命令为：db2 rollforward db DBName stop（或者：控制中心-&gt;所有数据库-&gt;dbname -&gt;右键-&gt;停止前滚）</p>
-<p>三、有关说明</p>
-<p>1、恢复操作也有online和offline的,区别如同backup的操作。<br>2、按照表空间的备份和恢复类似，加子句TABLESPACE ( tablespace-name )即可。表空间级别的备份/恢复操作要求数据库处于归档日志和启用增量备份模式下。<br>3、恢复的例子中只做了版本恢复。若还有更新的全备份和增量备份的image，可以依次做恢复（注意使用db2ckrst的建议恢复次序和次数）后，再做roll forward。</p>
 </span>
         
       
@@ -1931,21 +2035,21 @@ public class HbaseCRUDTest_New {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">6</span>
               <span class="site-state-item-name">分类</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">6</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
